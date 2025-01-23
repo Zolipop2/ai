@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframe Generator with Prompt</title>
+    <title>Iframe Generator with Timer</title>
     <style>
         body {
             display: flex;
@@ -43,13 +43,15 @@
         iframe {
             margin-top: 20px;
             width: 100%;
-            /* Make the iframe responsive */
             height: 80vh;
-            /* Set height to 80% of the viewport height */
             border: none;
-            /* Remove border for a cleaner look */
             border-radius: 10px;
-            /* Optional: rounded corners */
+        }
+
+        #timer {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #333;
         }
     </style>
 </head>
@@ -58,18 +60,38 @@
 
     <input type="text" id="promptInput" placeholder="Enter your prompt here..." />
     <button onclick="generateIframe()">Generate Image</button>
+    <div id="timer">Waiting...</div> <!-- Timer display -->
 
     <iframe id="outputIframe" src="" title="Generated Iframe"></iframe>
 
     <script>
+        let countdown;
+        let timeLeft = 9; // Set the timer duration in seconds
+
         function generateIframe() {
             const promptInput = document.getElementById('promptInput');
             const outputIframe = document.getElementById('outputIframe');
+            const timerDisplay = document.getElementById('timer');
 
             // Construct the URL with the prompt
             const baseUrl = 'https://image.zoltan-harowicz.workers.dev/';
             const prompt = encodeURIComponent(promptInput.value.trim()); // Encode the prompt for URL
             outputIframe.src = baseUrl + prompt; // Set the iframe source to the constructed URL
+
+            // Start the countdown timer
+            clearInterval(countdown); // Clear any existing timer
+            timeLeft = 9; // Reset the timer
+            timerDisplay.textContent = timeLeft; // Display the initial time
+
+            countdown = setInterval(function () {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    alert("Ready!");
+                }
+            }, 1000); // Update every second
         }
     </script>
 
